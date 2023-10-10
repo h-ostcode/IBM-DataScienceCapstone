@@ -72,13 +72,20 @@ def get_pie_chart(entered_site):
         fig = px.pie(spacex_df, values='Class', 
         names='Launch Site', 
         title='Total Success Launches by Site')
+        fig.update_traces(textfont_color='white')
+        fig.update_layout(hoverlabel=dict(font_color='white', bordercolor='black'))
         return fig
     else:
         # return the outcomes piechart for a selected site
-        filtered_df = spacex_df[spacex_df['Launch Site'] == entered_site]
-        fig = px.pie(filtered_df, values=filtered_df.groupby(['Class']).size().values, 
+        filtered_df = spacex_df[spacex_df['Launch Site'] == entered_site].groupby('Class').size().reset_index(name='Counts')
+        color_map = {0: '#eb553f', 1: '#636efa'}
+        fig = px.pie(filtered_df, values='Counts', 
         names=['Failed' if i == 0 else 'Successful' for i in filtered_df.groupby(['Class']).size().index], 
-        title='Total Success Launches for Site {}'.format(entered_site))
+        title='Total Success Launches for Site {}'.format(entered_site),
+        color='Class',
+        color_discrete_map=color_map)
+        fig.update_traces(textfont_color='white')
+        fig.update_layout(hoverlabel=dict(font_color='white', bordercolor='black'))
         return fig
 
 # TASK 4:
